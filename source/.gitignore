@@ -1,10 +1,18 @@
+# Cerberus Local Configs
+src/main/resources/application.properties
+src/main/resources/cerberus.properties
+src/main/resources/system.properties
+src/main/webapp/WEB-INF/jetty-env.xml
+
+# Build Artifacts & Logs
 target/
-.classpath
-.settings
-.project
 *.log
-/src/main/webapp/documentation
-/src/main/webapp/css/tailwind/node
-/src/main/webapp/css/tailwind/node_modules
-localdata
-nb-configuration.xml
+server_log.txt
+startup_log.txt
+
+# Frontend Noise
+src/main/webapp/css/tailwind/package-lock.json
+src/main/webapp/css/global/crb_style.css
+
+# OS Generated files
+.DS_Store
