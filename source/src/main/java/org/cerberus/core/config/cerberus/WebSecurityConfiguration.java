@@ -20,21 +20,35 @@
 package org.cerberus.core.config.cerberus;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.accept.ContentNegotiationStrategy;
 
-/**
- *
- * @author bcivel
- */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.csrf().disable();
-	}
+    @Autowired
+    @Lazy
+    private ContentNegotiationStrategy contentNegotiationStrategy;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .authorizeRequests()
+                .antMatchers("/Login.jsp", "/login", "/css/**", "/js/**").permitAll()
+                .anyRequest().authenticated()
+            .and()
+            .formLogin()
+                .loginPage("/Login.jsp")
+                .loginProcessingUrl("/j_security_check")
+                .usernameParameter("j_username")
+                .passwordParameter("j_password")
+                .defaultSuccessUrl("/index", true)
+                .permitAll();
+    }
 }

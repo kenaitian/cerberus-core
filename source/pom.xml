@@ -114,7 +114,7 @@
         <!--        <mockito-all.version>1.9.5</mockito-all.version>-->
 
         <!-- Maven plugin version -->
-        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.2.3</maven-surefire-plugin.version>
         <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
@@ -686,18 +686,36 @@
 
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${maven-javadoc-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${maven-release-plugin.version}</version>
-                </plugin>
+               <plugin>
+                   <groupId>org.eclipse.jetty</groupId>
+                   <artifactId>jetty-maven-plugin</artifactId>
+                   <version>9.4.51.v20230217</version>
+                   <configuration>
+                       <webApp>
+                           <contextPath>/</contextPath>
+                           <jettyEnvXml>${project.basedir}/src/main/webapp/WEB-INF/jetty-env.xml</jettyEnvXml>
+                       </webApp>
+                       <jettyXml>${project.basedir}/src/main/webapp/WEB-INF/jetty-env.xml</jettyXml>
+                       <scanIntervalSeconds>10</scanIntervalSeconds>
+                   </configuration>
+                   <dependencies>  
+                       <dependency>
+                           <groupId>org.eclipse.jetty</groupId>
+                           <artifactId>jetty-plus</artifactId>
+                           <version>9.4.51.v20230217</version>
+                       </dependency>
+                       <dependency>
+                           <groupId>org.eclipse.jetty</groupId>
+                           <artifactId>jetty-jndi</artifactId>
+                           <version>9.4.51.v20230217</version>
+                       </dependency>
+                       <dependency>
+                           <groupId>mysql</groupId>
+                           <artifactId>mysql-connector-java</artifactId>
+                           <version>8.0.28</version>   
+                       </dependency>
+                   </dependencies>
+               </plugin>
             </plugins>
         </pluginManagement>
 
@@ -944,14 +962,6 @@
                 <version>${maven-deploy-plugin.version}</version>
                 <configuration>
                     <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>

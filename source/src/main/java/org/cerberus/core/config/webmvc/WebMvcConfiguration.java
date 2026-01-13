@@ -24,22 +24,16 @@ import org.apache.logging.log4j.Logger;
 import org.cerberus.core.config.springdoc.OpenAPIConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Lazy; // NEEDED
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 
-/**
- *
- * @author bcivel
- */
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {
@@ -52,15 +46,25 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private static final Logger LOG = LogManager.getLogger(WebMvcConfiguration.class);
 
+    // Change from @Autowired field to a final field
+    private final RequestMappingHandlerMapping handlerMapping;
+
+    // Use Constructor Injection with @Lazy to break the circular reference
     @Autowired
-    @Qualifier("requestMappingHandlerMapping")
-    private RequestMappingHandlerMapping handlerMapping;
+    public WebMvcConfiguration(@Lazy @Qualifier("requestMappingHandlerMapping") RequestMappingHandlerMapping handlerMapping) {
+        this.handlerMapping = handlerMapping;
+    }
 
     @PostConstruct
     public void logAllEndpoints() {
-        handlerMapping.getHandlerMethods().forEach((k, v) -> {
-            LOG.debug("WebMVC : Mapped endpoint: " + k + " -> " + v);
-        });
+        // We use a try-catch to ensure that even if the lazy proxy 
+        // has issues, the server (and your 503 fix) still proceeds.
+        try {
+            handlerMapping.getHandlerMethods().forEach((k, v) -> {
+                LOG.debug("WebMVC : Mapped endpoint: " + k + " -> " + v); 
+            });
+        } catch (Exception e) {
+            LOG.warn("WebMVC: Mapping logs deferred until full context start.");
+        }
     }
-
 }
