@@ -16,3 +16,10 @@ src/main/webapp/css/global/crb_style.css
 
 # OS Generated files
 .DS_Store
+
+# Node & Frontend dependencies
+src/main/webapp/css/tailwind/node/
+src/main/webapp/css/tailwind/node_modules/
+
+# Documentation builds (if generated)
+src/main/webapp/documentation/
