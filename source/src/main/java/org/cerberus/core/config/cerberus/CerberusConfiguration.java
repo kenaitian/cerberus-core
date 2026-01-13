@@ -27,6 +27,7 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.jndi.JndiObjectFactoryBean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.context.annotation.Lazy;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -64,9 +65,10 @@ import java.util.concurrent.Executor;
 public class CerberusConfiguration {
 
     @Bean
+    @Lazy
     public DataSource dataSource() throws NamingException {
         JndiObjectFactoryBean jndiObjectFactoryBean = new JndiObjectFactoryBean();
-        jndiObjectFactoryBean.setJndiName("jdbc/cerberus" + System.getProperty(Property.ENVIRONMENT));
+        jndiObjectFactoryBean.setJndiName("jdbc/cerberus");
         jndiObjectFactoryBean.setResourceRef(true);
         jndiObjectFactoryBean.setProxyInterface(DataSource.class);
         jndiObjectFactoryBean.afterPropertiesSet();
